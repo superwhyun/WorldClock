@@ -1,5 +1,5 @@
 import type { Clock } from "@/types"
-import { getCountries } from "./timezone-utils"
+import { MAJOR_CITIES } from "./city-data"
 
 // URL 파라미터로 변환할 때 사용할 구분자
 const CLOCK_SEPARATOR = ","
@@ -9,11 +9,20 @@ const CLOCK_DATA_SEPARATOR = ":"
 export function clocksToUrlParam(clocks: Clock[]): string {
   return clocks
     .map((clock) => {
-      // 각 시계를 "countryCode:timezone:label" 형식으로 변환
-      // label이 없거나 국가 이름과 같으면 생략
-      const label = clock.label && clock.label !== clock.countryName ? `:${encodeURIComponent(clock.label)}` : ""
-      return `${clock.countryCode}:${encodeURIComponent(clock.timezone)}${label}`
+      // 각 시계를 "cityId:timezone:label" 형식으로 변환
+      // 도시 ID 찾기
+      const city = MAJOR_CITIES.find(city => 
+        city.timezone === clock.timezone && 
+        city.countryCode === clock.countryCode
+      )
+      
+      if (!city) return null
+      
+      // label이 없거나 도시 이름과 같으면 생략
+      const label = clock.label && clock.label !== clock.cityName ? `:${encodeURIComponent(clock.label)}` : ""
+      return `${city.id}${label ? `:${encodeURIComponent(clock.label)}` : ""}`
     })
+    .filter(Boolean)
     .join(CLOCK_SEPARATOR)
 }
 
@@ -22,29 +31,25 @@ export async function urlParamToClocks(param: string): Promise<Clock[]> {
   if (!param) return []
 
   try {
-    // 모든 국가 데이터 가져오기
-    const countries = await getCountries()
-    const countryMap = new Map(countries.map((country) => [country.code, country]))
-
     // 파라미터 파싱
     return param
       .split(CLOCK_SEPARATOR)
       .map((clockParam) => {
         const parts = clockParam.split(CLOCK_DATA_SEPARATOR)
-        const countryCode = parts[0]
-        const timezone = decodeURIComponent(parts[1])
-        const label = parts.length > 2 ? decodeURIComponent(parts[2]) : ""
+        const cityId = parts[0]
+        const label = parts.length > 1 ? decodeURIComponent(parts[1]) : ""
 
-        // 국가 코드가 유효한지 확인
-        const country = countryMap.get(countryCode)
-        if (!country) return null
+        // 도시 ID로 도시 정보 찾기
+        const city = MAJOR_CITIES.find(city => city.id === cityId)
+        if (!city) return null
 
         return {
           id: crypto.randomUUID(), // 새 ID 생성
-          countryCode,
-          timezone,
-          countryName: country.name,
-          label,
+          timezone: city.timezone,
+          countryCode: city.countryCode,
+          cityName: city.name,
+          countryName: city.country,
+          label: label || "",
         }
       })
       .filter((clock): clock is Clock => clock !== null)

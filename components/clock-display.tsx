@@ -31,7 +31,7 @@ const isNightTime = (datetime: DateTime) => {
 export default function ClockDisplay({ clock, displayType, timeFormat, onRemove, onLabelChange }: ClockDisplayProps) {
   const [currentTime, setCurrentTime] = useState<DateTime>(DateTime.now().setZone(clock.timezone))
   const [editing, setEditing] = useState(false)
-  const [label, setLabel] = useState(clock.label || clock.countryName)
+  const [label, setLabel] = useState(clock.label || clock.cityName)
   const [isDST, setIsDST] = useState(false)
 
   // Set up sortable
@@ -104,7 +104,7 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
                     alt={`${clock.countryName} flag`}
                     className="rounded-sm"
                   />
-                  <CardTitle className="text-lg font-medium">{clock.label || clock.countryName}</CardTitle>
+                  <CardTitle className="text-lg font-medium">{clock.label || clock.cityName}</CardTitle>
                   <Button
                     size="icon"
                     variant="ghost"
@@ -130,6 +130,8 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
           <div
             className={`flex items-center gap-2 text-sm ${isNightTime(currentTime) ? "text-gray-400" : "text-muted-foreground"}`}
           >
+            <span>{clock.countryName}</span>
+            <span>•</span>
             <span>{currentTime.toFormat("ZZZZ")}</span>
             <span>•</span>
             <span>{getTimeDifference()}</span>

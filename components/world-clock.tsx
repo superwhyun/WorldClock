@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
 import ClockDisplay from "@/components/clock-display"
-import CountrySelector from "@/components/country-selector"
+import CountrySelector from "@/components/city-selector"
 import SettingsPanel from "@/components/settings-panel"
 import ShareDialog from "@/components/share-dialog"
 import { useClockStore } from "@/lib/clock-store"
@@ -78,9 +78,9 @@ export default function WorldClock() {
     }
   }, [mounted, theme, setTheme, autoDarkMode])
 
-  const handleAddClock = (timezone: string, countryCode: string, countryName: string) => {
+  const handleAddClock = (timezone: string, countryCode: string, cityName: string, countryName: string) => {
     if (clocks.length < 8) {
-      addClock(timezone, countryCode, countryName)
+      addClock(timezone, countryCode, cityName, countryName)
     }
   }
 
@@ -174,9 +174,9 @@ export default function WorldClock() {
 
               {clocks.length === 0 && (
                 <div className="text-center py-12">
-                  <h2 className="text-xl font-semibold mb-4">Add your first clock</h2>
+                  <h2 className="text-xl font-semibold mb-4">첫 번째 시계 추가</h2>
                   <p className="text-muted-foreground mb-6">
-                    Select a country to add a clock and start tracking different time zones
+                    도시를 선택하여 시계를 추가하고 다양한 시간대를 추적해보세요
                   </p>
                   <CountrySelector onSelect={handleAddClock} />
                 </div>
