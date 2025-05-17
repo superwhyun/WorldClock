@@ -1,0 +1,108 @@
+interface WeatherData {
+  location: {
+    name: string;
+    country: string;
+  };
+  current: {
+    temp_c: number;
+    temp_f: number;
+    condition: {
+      text: string;
+      icon: string;
+      code: number;
+    };
+    humidity: number;
+    wind_kph: number;
+  };
+}
+
+// WeatherAPI 날씨 데이터 조회
+export async function getWeatherData(cityName: string): Promise<WeatherData | null> {
+  const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+  
+  if (!apiKey) {
+    console.warn('Weather API key not found. Skipping weather data.');
+    return null;
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(cityName)}&aqi=no`,
+      {
+        next: { revalidate: 600 }, // 10분 캐시
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Weather API error: ${response.status}`);
+    }
+
+    const data: WeatherData = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch weather for ${cityName}:`, error);
+    return null;
+  }
+}
+
+// 날씨 코드에 따른 이모지 반환
+export function getWeatherEmoji(code: number): string {
+  // WeatherAPI 날씨 코드를 기반으로 이모지 매핑
+  const weatherEmojis: { [key: number]: string } = {
+    1000: '☀️', // Sunny
+    1003: '⛅', // Partly cloudy
+    1006: '☁️', // Cloudy
+    1009: '☁️', // Overcast
+    1030: '🌫️', // Mist
+    1063: '🌦️', // Patchy rain possible
+    1066: '🌨️', // Patchy snow possible
+    1069: '🌨️', // Patchy sleet possible
+    1072: '🌨️', // Patchy freezing drizzle possible
+    1087: '⛈️', // Thundery outbreaks possible
+    1114: '❄️', // Blowing snow
+    1117: '❄️', // Blizzard
+    1135: '🌫️', // Fog
+    1147: '🌫️', // Freezing fog
+    1150: '🌦️', // Patchy light drizzle
+    1153: '🌦️', // Light drizzle
+    1168: '🌨️', // Freezing drizzle
+    1171: '🌨️', // Heavy freezing drizzle
+    1180: '🌦️', // Patchy light rain
+    1183: '🌧️', // Light rain
+    1186: '🌦️', // Moderate rain at times
+    1189: '🌧️', // Moderate rain
+    1192: '🌦️', // Heavy rain at times
+    1195: '🌧️', // Heavy rain
+    1198: '🌨️', // Light freezing rain
+    1201: '🌨️', // Moderate or heavy freezing rain
+    1204: '🌧️', // Light sleet
+    1207: '🌧️', // Moderate or heavy sleet
+    1210: '🌨️', // Patchy light snow
+    1213: '❄️', // Light snow
+    1216: '🌨️', // Patchy moderate snow
+    1219: '❄️', // Moderate snow
+    1222: '🌨️', // Patchy heavy snow
+    1225: '❄️', // Heavy snow
+    1237: '🌨️', // Ice pellets
+    1240: '🌦️', // Light rain shower
+    1243: '🌧️', // Moderate or heavy rain shower
+    1246: '🌧️', // Torrential rain shower
+    1249: '🌧️', // Light sleet showers
+    1252: '🌧️', // Moderate or heavy sleet showers
+    1255: '❄️', // Light snow showers
+    1258: '❄️', // Moderate or heavy snow showers
+    1261: '🌨️', // Light showers of ice pellets
+    1264: '🌨️', // Moderate or heavy showers of ice pellets
+    1273: '⛈️', // Patchy light rain with thunder
+    1276: '⛈️', // Moderate or heavy rain with thunder
+    1279: '⛈️', // Patchy light snow with thunder
+    1282: '⛈️', // Moderate or heavy snow with thunder
+  };
+
+  return weatherEmojis[code] || '🌤️';
+}
+
+// 온도 단위 변환
+export function formatTemperature(temp: number, unit: 'C' | 'F' = 'C'): string {
+  return `${Math.round(temp)}°${unit}`;
+}

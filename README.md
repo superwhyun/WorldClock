@@ -6,6 +6,7 @@
 
 - 🏙️ **40개 이상의 주요 도시** - 6개 대륙의 대표 도시들
 - 🔍 **스마트 검색** - 도시명과 국가명으로 쉽게 찾기
+- 🌤️ **실시간 날씨 정보** - 각 도시의 현재 온도와 날씨 상태
 - 🌙 **자동 다크모드** - 각 도시의 현지 시간 기준 (밤 9시~오전 7시)
 - 📱 **반응형 디자인** - 모바일, 태블릿, 데스크톱 모두 지원
 - 🎯 **드래그 앤 드롭** - 시계 순서를 자유롭게 변경
@@ -32,11 +33,25 @@ cd WorldClock
 # 의존성 설치
 npm install --legacy-peer-deps
 
+# 환경변수 설정 (선택사항 - 날씨 기능 활성화)
+cp .env.example .env.local
+# .env.local 파일을 편집하여 WeatherAPI 키 추가:
+# NEXT_PUBLIC_WEATHER_API_KEY=your_weatherapi_key_here
+
 # 개발 서버 실행
 npm run dev
 ```
 
 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인하세요.
+
+### 날씨 기능 설정 (선택사항)
+
+1. [WeatherAPI.com](https://www.weatherapi.com/)에서 무료 API 키 발급
+2. `.env.local` 파일에 API 키 추가:
+   ```
+   NEXT_PUBLIC_WEATHER_API_KEY=your_weatherapi_key_here
+   ```
+3. Vercel 배포 시: 환경변수로 `NEXT_PUBLIC_WEATHER_API_KEY` 추가
 
 ## 🛠️ 기술 스택
 

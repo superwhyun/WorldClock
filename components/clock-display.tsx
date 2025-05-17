@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import AnalogClock from "@/components/analog-clock"
 import DigitalClock from "@/components/digital-clock"
+import Weather from "@/components/weather"
 import type { Clock, ClockDisplayType, TimeFormat } from "@/types"
 
 interface ClockDisplayProps {
@@ -173,6 +174,11 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
               }`}
             >
               {currentTime.toFormat("EEEE, MMMM d, yyyy")}
+            </div>
+            
+            {/* Weather Information */}
+            <div className="mt-3">
+              <Weather cityName={clock.cityName} isDarkMode={isNightTime(currentTime)} />
             </div>
           </div>
         </CardContent>
