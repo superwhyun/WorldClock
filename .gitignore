@@ -9,6 +9,13 @@ dev-debug.log
 # Dependency directories
 node_modules/
 
+# Next.js
+.next/
+next-env.d.ts
+
+# Package lock files
+package-lock.json
+
 # Environment variables
 .env
 
