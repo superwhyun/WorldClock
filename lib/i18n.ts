@@ -71,6 +71,20 @@ export const translations = {
     weatherLoading: "날씨 정보 로딩 중...",
     weatherFailed: "날씨 로딩 실패",
     
+    // Weather Detail Modal
+    weatherDetail: "날씨 상세정보",
+    threeDayForecast: "3일 예보",
+    hourlyForecast: "시간별 예보 (오늘)",
+    high: "최고",
+    low: "최저",
+    humidity: "습도",
+    windSpeed: "풍속",
+    chanceOfRain: "강수확률",
+    rainChance: "강수확률",
+    temperature: "온도",
+    noHourlyData: "현재 시간 이후의 시간별 예보가 없습니다",
+    closeWeather: "닫기",
+    
     // Days of week
     monday: "월요일",
     tuesday: "화요일", 
@@ -166,6 +180,20 @@ export const translations = {
     // Weather
     weatherLoading: "Loading weather...",
     weatherFailed: "Weather failed",
+    
+    // Weather Detail Modal
+    weatherDetail: "Weather Details",
+    threeDayForecast: "3-Day Forecast",
+    hourlyForecast: "Hourly Forecast (Today)",
+    high: "High",
+    low: "Low",
+    humidity: "Humidity",
+    windSpeed: "Wind",
+    chanceOfRain: "Rain",
+    rainChance: "Rain Chance",
+    temperature: "Temperature",
+    noHourlyData: "No hourly data available for remaining hours today",
+    closeWeather: "Close",
     
     // Days of week
     monday: "Monday",

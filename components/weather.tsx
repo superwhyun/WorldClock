@@ -10,6 +10,7 @@ interface WeatherProps {
   cityNameEn: string; // 영문명 추가
   isDarkMode?: boolean;
   language: Language;
+  onWeatherClick?: () => void;
 }
 
 interface WeatherState {
@@ -20,7 +21,7 @@ interface WeatherState {
   error: boolean;
 }
 
-export default function Weather({ cityName, cityNameEn, isDarkMode = false, language }: WeatherProps) {
+export default function Weather({ cityName, cityNameEn, isDarkMode = false, language, onWeatherClick }: WeatherProps) {
   const [weather, setWeather] = useState<WeatherState>({
     temp: 0,
     condition: '',
@@ -151,9 +152,19 @@ export default function Weather({ cityName, cityNameEn, isDarkMode = false, lang
   }
 
   return (
-    <div className={`flex items-center justify-center gap-3 text-base ${
-      isDarkMode ? 'text-gray-300' : 'text-gray-700'
-    }`}>
+    <div 
+      className={`flex items-center justify-center gap-3 text-base cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-2 transition-colors duration-200 ${
+        isDarkMode ? 'text-gray-300' : 'text-gray-700'
+      }`}
+      onClick={onWeatherClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onWeatherClick?.()
+        }
+      }}
+    >
       <span className="text-2xl" role="img" aria-label={weather.condition}>
         {weather.emoji}
       </span>

@@ -14,6 +14,8 @@ export interface CityInfo {
 export const MAJOR_CITIES: CityInfo[] = [
   // 아시아
   { id: 'seoul', name: '서울', nameEn: 'Seoul', country: '대한민국', timezone: 'Asia/Seoul', countryCode: 'KR', continent: 'Asia', utcOffset: '+09:00' },
+  { id: 'daejeon', name: '대전', nameEn: 'Daejeon', country: '대한민국', timezone: 'Asia/Seoul', countryCode: 'KR', continent: 'Asia', utcOffset: '+09:00' },
+  { id: 'sejong', name: '세종', nameEn: 'Sejong', country: '대한민국', timezone: 'Asia/Seoul', countryCode: 'KR', continent: 'Asia', utcOffset: '+09:00' },
   { id: 'tokyo', name: '도쿄', nameEn: 'Tokyo', country: '일본', timezone: 'Asia/Tokyo', countryCode: 'JP', continent: 'Asia', utcOffset: '+09:00' },
   { id: 'beijing', name: '베이징', nameEn: 'Beijing', country: '중국', timezone: 'Asia/Shanghai', countryCode: 'CN', continent: 'Asia', utcOffset: '+08:00' },
   { id: 'shanghai', name: '상하이', nameEn: 'Shanghai', country: '중국', timezone: 'Asia/Shanghai', countryCode: 'CN', continent: 'Asia', utcOffset: '+08:00' },

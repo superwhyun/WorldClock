@@ -16,6 +16,108 @@ interface WeatherData {
   };
 }
 
+interface ForecastDay {
+  date: string;
+  date_epoch: number;
+  day: {
+    maxtemp_c: number;
+    mintemp_c: number;
+    avgtemp_c: number;
+    maxwind_kph: number;
+    totalprecip_mm: number;
+    condition: {
+      text: string;
+      icon: string;
+      code: number;
+    };
+  };
+  hour: Array<{
+    time_epoch: number;
+    time: string;
+    temp_c: number;
+    condition: {
+      text: string;
+      icon: string;
+      code: number;
+    };
+    chance_of_rain: number;
+  }>;
+}
+
+interface ForecastData {
+  location: {
+    name: string;
+    country: string;
+    localtime: string;
+  };
+  current: {
+    temp_c: number;
+    condition: {
+      text: string;
+      icon: string;
+      code: number;
+    };
+    humidity: number;
+    wind_kph: number;
+  };
+  forecast: {
+    forecastday: ForecastDay[];
+  };
+}
+
+// WeatherAPI 3일 예보 데이터 조회
+export async function getForecastData(cityName: string): Promise<ForecastData | null> {
+  let apiKey: string | null = null;
+  
+  // localStorage를 우선적으로 확인 (클라이언트 사이드)
+  if (typeof window !== 'undefined') {
+    const storedApiKey = localStorage.getItem('world-clock-weather-api-key');
+    if (storedApiKey !== null) {
+      // localStorage에 값이 있으면 (빈 문자열이라도) 그것을 사용
+      apiKey = storedApiKey.trim() || null;
+    } else {
+      // localStorage에 값이 없으면 환경변수 사용
+      apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY || null;
+    }
+  } else {
+    // 서버사이드에서는 환경변수만 사용
+    apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY || null;
+  }
+  
+  if (!apiKey) {
+    console.warn('Weather API key not found. Skipping forecast data.');
+    return null;
+  }
+
+  // 도시명 유효성 검사
+  if (!cityName || cityName.trim() === '' || cityName === 'undefined') {
+    console.error('Invalid city name provided for forecast API:', cityName);
+    return null;
+  }
+
+  const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(cityName)}&days=3&aqi=no&alerts=no`;
+  console.log('Weather Forecast API URL:', url.replace(apiKey, 'API_KEY_HIDDEN'));
+
+  try {
+    const response = await fetch(url);
+
+    console.log('Weather Forecast API Response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Weather Forecast API error: ${response.status} - ${errorText}`);
+      throw new Error(`Weather Forecast API error: ${response.status}`);
+    }
+
+    const data: ForecastData = await response.json();
+    console.log('Parsed forecast data:', data);
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch forecast for ${cityName}:`, error);
+    return null;
+  }
+}
+
 // WeatherAPI 날씨 데이터 조회
 export async function getWeatherData(cityName: string): Promise<WeatherData | null> {
   let apiKey: string | null = null;

@@ -14,6 +14,7 @@ import AnalogClock from "@/components/analog-clock"
 import { useTranslations, formatDate } from "@/lib/i18n"
 import DigitalClock from "@/components/digital-clock"
 import Weather from "@/components/weather"
+import WeatherDetailDialog from "@/components/weather-detail-dialog"
 import type { Clock, ClockDisplayType, TimeFormat, Language } from "@/types"
 
 interface ClockDisplayProps {
@@ -36,6 +37,7 @@ export default function ClockDisplay({ clock, displayType, timeFormat, language,
   const [editing, setEditing] = useState(false)
   const [label, setLabel] = useState(clock.label || clock.cityName)
   const [isDST, setIsDST] = useState(false)
+  const [weatherDialogOpen, setWeatherDialogOpen] = useState(false)
 
   const t = useTranslations(language)
 
@@ -191,10 +193,21 @@ export default function ClockDisplay({ clock, displayType, timeFormat, language,
                 cityNameEn={clock.cityNameEn}
                 isDarkMode={isNightTime(currentTime)}
                 language={language}
+                onWeatherClick={() => setWeatherDialogOpen(true)}
               />
             </div>
           </div>
         </CardContent>
+
+        {/* Weather Detail Dialog */}
+        <WeatherDetailDialog
+          open={weatherDialogOpen}
+          onOpenChange={setWeatherDialogOpen}
+          cityName={clock.cityName}
+          cityNameEn={clock.cityNameEn}
+          timezone={clock.timezone}
+          language={language}
+        />
       </Card>
     </div>
   )
