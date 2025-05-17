@@ -31,6 +31,7 @@ export const MAJOR_CITIES: CityInfo[] = [
   { id: 'madrid', name: '마드리드', country: '스페인', timezone: 'Europe/Madrid', countryCode: 'ES', continent: 'Europe', utcOffset: '+01:00' },
   { id: 'amsterdam', name: '암스테르담', country: '네덜란드', timezone: 'Europe/Amsterdam', countryCode: 'NL', continent: 'Europe', utcOffset: '+01:00' },
   { id: 'zurich', name: '취리히', country: '스위스', timezone: 'Europe/Zurich', countryCode: 'CH', continent: 'Europe', utcOffset: '+01:00' },
+  { id: 'geneva', name: '제네바', country: '스위스', timezone: 'Europe/Zurich', countryCode: 'CH', continent: 'Europe', utcOffset: '+01:00' },
   { id: 'moscow', name: '모스크바', country: '러시아', timezone: 'Europe/Moscow', countryCode: 'RU', continent: 'Europe', utcOffset: '+03:00' },
 
   // 북미
