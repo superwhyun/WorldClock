@@ -48,6 +48,7 @@ export async function urlParamToClocks(param: string): Promise<Clock[]> {
           timezone: city.timezone,
           countryCode: city.countryCode,
           cityName: city.name,
+          cityNameEn: city.nameEn,
           countryName: city.country,
           label: label || "",
         }

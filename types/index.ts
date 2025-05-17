@@ -10,6 +10,7 @@ export interface Clock {
   timezone: string
   countryCode: string
   cityName: string
+  cityNameEn: string
   countryName: string
   label: string
 }

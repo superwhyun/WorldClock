@@ -178,7 +178,11 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
             
             {/* Weather Information */}
             <div className="mt-3">
-              <Weather cityName={clock.cityName} isDarkMode={isNightTime(currentTime)} />
+              <Weather 
+                cityName={clock.cityName} 
+                cityNameEn={clock.cityNameEn}
+                isDarkMode={isNightTime(currentTime)} 
+              />
             </div>
           </div>
         </CardContent>

@@ -12,7 +12,7 @@ interface ClockStore {
   timeFormat: TimeFormat
   autoDarkMode: boolean
   isLoading: boolean
-  addClock: (timezone: string, countryCode: string, cityName: string, countryName: string) => void
+  addClock: (timezone: string, countryCode: string, cityName: string, cityNameEn: string, countryName: string) => void
   removeClock: (id: string) => void
   updateClockLabel: (id: string, label: string) => void
   reorderClocks: (activeId: string, overId: string) => void
@@ -117,12 +117,13 @@ export function useClockStore(): ClockStore {
   }, [clocks, displayType, timeFormat, autoDarkMode, initialized])
 
   // Add a new clock
-  const addClock = (timezone: string, countryCode: string, cityName: string, countryName: string) => {
+  const addClock = (timezone: string, countryCode: string, cityName: string, cityNameEn: string, countryName: string) => {
     const newClock: Clock = {
       id: uuidv4(),
       timezone,
       countryCode,
       cityName,
+      cityNameEn,
       countryName,
       label: "",
     }

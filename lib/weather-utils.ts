@@ -25,19 +25,24 @@ export async function getWeatherData(cityName: string): Promise<WeatherData | nu
     return null;
   }
 
-  try {
-    const response = await fetch(
-      `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(cityName)}&aqi=no`,
-      {
-        next: { revalidate: 600 }, // 10분 캐시
-      }
-    );
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(cityName)}&aqi=no`;
+  console.log('Weather API URL:', url.replace(apiKey, 'API_KEY_HIDDEN'));
 
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 600 }, // 10분 캐시
+    });
+
+    console.log('Weather API Response status:', response.status);
+    
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Weather API error: ${response.status} - ${errorText}`);
       throw new Error(`Weather API error: ${response.status}`);
     }
 
     const data: WeatherData = await response.json();
+    console.log('Parsed weather data:', data);
     return data;
   } catch (error) {
     console.error(`Failed to fetch weather for ${cityName}:`, error);

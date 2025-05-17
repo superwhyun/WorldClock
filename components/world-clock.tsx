@@ -78,9 +78,9 @@ export default function WorldClock() {
     }
   }, [mounted, theme, setTheme, autoDarkMode])
 
-  const handleAddClock = (timezone: string, countryCode: string, cityName: string, countryName: string) => {
+  const handleAddClock = (timezone: string, countryCode: string, cityName: string, cityNameEn: string, countryName: string) => {
     if (clocks.length < 8) {
-      addClock(timezone, countryCode, cityName, countryName)
+      addClock(timezone, countryCode, cityName, cityNameEn, countryName)
     }
   }
 

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 import { MAJOR_CITIES, CITIES_BY_CONTINENT, searchCities, type CityInfo } from "@/lib/city-data"
 
 interface CitySelectorProps {
-  onSelect: (timezone: string, countryCode: string, cityName: string, countryName: string) => void
+  onSelect: (timezone: string, countryCode: string, cityName: string, cityNameEn: string, countryName: string) => void
 }
 
 export default function CitySelector({ onSelect }: CitySelectorProps) {
@@ -19,7 +19,7 @@ export default function CitySelector({ onSelect }: CitySelectorProps) {
   const filteredCities = searchQuery ? searchCities(searchQuery) : MAJOR_CITIES
 
   const handleSelect = (city: CityInfo) => {
-    onSelect(city.timezone, city.countryCode, city.name, city.country)
+    onSelect(city.timezone, city.countryCode, city.name, city.nameEn, city.country)
     setOpen(false)
     setSearchQuery("")
   }
