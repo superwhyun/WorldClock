@@ -4,6 +4,9 @@ export type ClockDisplayType = "analog" | "digital"
 // Time format
 export type TimeFormat = "12h" | "24h"
 
+// Language type
+export type Language = "ko" | "en"
+
 // Clock object
 export interface Clock {
   id: string

@@ -11,14 +11,16 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import AnalogClock from "@/components/analog-clock"
+import { useTranslations, formatDate } from "@/lib/i18n"
 import DigitalClock from "@/components/digital-clock"
 import Weather from "@/components/weather"
-import type { Clock, ClockDisplayType, TimeFormat } from "@/types"
+import type { Clock, ClockDisplayType, TimeFormat, Language } from "@/types"
 
 interface ClockDisplayProps {
   clock: Clock
   displayType: ClockDisplayType
   timeFormat: TimeFormat
+  language: Language
   onRemove: () => void
   onLabelChange: (label: string) => void
 }
@@ -29,11 +31,13 @@ const isNightTime = (datetime: DateTime) => {
   return hour >= 21 || hour < 7
 }
 
-export default function ClockDisplay({ clock, displayType, timeFormat, onRemove, onLabelChange }: ClockDisplayProps) {
+export default function ClockDisplay({ clock, displayType, timeFormat, language, onRemove, onLabelChange }: ClockDisplayProps) {
   const [currentTime, setCurrentTime] = useState<DateTime>(DateTime.now().setZone(clock.timezone))
   const [editing, setEditing] = useState(false)
   const [label, setLabel] = useState(clock.label || clock.cityName)
   const [isDST, setIsDST] = useState(false)
+
+  const t = useTranslations(language)
 
   // Set up sortable
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: clock.id })
@@ -72,13 +76,17 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
     if (hours > 0) result += `${hours}h `
     if (minutes > 0) result += `${minutes}m`
 
-    if (result === "") return "Same time"
+    if (result === "") return t.sameTime
     return `${diff > 0 ? "+" : "-"} ${result.trim()}`
   }
 
   return (
     <div ref={setNodeRef} style={style} className="touch-none">
-      <Card className={`overflow-hidden ${isNightTime(currentTime) ? "bg-gray-900 text-white" : ""}`}>
+      <Card className={`overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+        isNightTime(currentTime) 
+          ? "bg-gray-900 text-white shadow-md hover:shadow-gray-700/25" 
+          : "shadow-md hover:shadow-gray-400/25"
+      }`}>
         <CardHeader className={`pb-2 relative ${isNightTime(currentTime) ? "border-gray-700" : ""}`}>
           <div className="flex items-center justify-between">
             {editing ? (
@@ -94,9 +102,9 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
                   <div
                     {...attributes}
                     {...listeners}
-                    className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
+                    className="cursor-grab active:cursor-grabbing p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors duration-200 group"
                   >
-                    <GripVertical className="h-4 w-4 text-muted-foreground" />
+                    <GripVertical className="h-4 w-4 text-muted-foreground group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors duration-200" />
                   </div>
                   <img
                     src={`https://flagcdn.com/w20/${clock.countryCode.toLowerCase()}.png`}
@@ -153,7 +161,7 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>This location is currently observing Daylight Saving Time</p>
+                      <p>{t.dstTooltip}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -161,19 +169,19 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
             )}
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="py-2">
+        <CardContent className="py-2">
+          <div className="py-1">
             {displayType === "analog" ? (
               <AnalogClock datetime={currentTime} />
             ) : (
               <DigitalClock datetime={currentTime} timeFormat={timeFormat} />
             )}
             <div
-              className={`text-center mt-2 text-sm ${
-                isNightTime(currentTime) ? "text-gray-400" : "text-muted-foreground"
+              className={`text-center mt-2 text-base font-medium ${
+                isNightTime(currentTime) ? "text-gray-300" : "text-gray-700"
               }`}
             >
-              {currentTime.toFormat("EEEE, MMMM d, yyyy")}
+              {formatDate(currentTime.toJSDate(), language)}
             </div>
             
             {/* Weather Information */}
@@ -181,7 +189,8 @@ export default function ClockDisplay({ clock, displayType, timeFormat, onRemove,
               <Weather 
                 cityName={clock.cityName} 
                 cityNameEn={clock.cityNameEn}
-                isDarkMode={isNightTime(currentTime)} 
+                isDarkMode={isNightTime(currentTime)}
+                language={language}
               />
             </div>
           </div>

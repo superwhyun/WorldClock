@@ -6,16 +6,20 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
+import { useTranslations } from "@/lib/i18n"
+import type { Language } from "@/types"
 
 interface ShareDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   shareUrl: string
+  language: Language
 }
 
-export default function ShareDialog({ open, onOpenChange, shareUrl }: ShareDialogProps) {
+export default function ShareDialog({ open, onOpenChange, shareUrl, language }: ShareDialogProps) {
   const [copied, setCopied] = useState(false)
   const { toast } = useToast()
+  const t = useTranslations(language)
 
   const handleCopy = async () => {
     try {
@@ -23,8 +27,8 @@ export default function ShareDialog({ open, onOpenChange, shareUrl }: ShareDialo
       setCopied(true)
 
       toast({
-        title: "URL 복사됨",
-        description: "공유 URL이 클립보드에 복사되었습니다.",
+        title: t.copied,
+        description: t.shareDescription,
       })
 
       setTimeout(() => setCopied(false), 2000)
@@ -70,8 +74,8 @@ export default function ShareDialog({ open, onOpenChange, shareUrl }: ShareDialo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>시계 구성 공유하기</DialogTitle>
-          <DialogDescription>아래 URL을 복사하여 다른 사람과 현재 시계 구성을 공유하세요.</DialogDescription>
+          <DialogTitle>{t.shareTitle}</DialogTitle>
+          <DialogDescription>{t.shareDescription}</DialogDescription>
         </DialogHeader>
         <div className="flex items-center space-x-2 mt-4">
           <div className="grid flex-1 gap-2">
@@ -87,7 +91,7 @@ export default function ShareDialog({ open, onOpenChange, shareUrl }: ShareDialo
           </div>
           <Button size="icon" onClick={handleCopy} className="shrink-0">
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            <span className="sr-only">URL 복사</span>
+            <span className="sr-only">{t.copyUrl}</span>
           </Button>
         </div>
         {navigator.share && (

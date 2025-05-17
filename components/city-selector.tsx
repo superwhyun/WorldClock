@@ -6,16 +6,20 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { useTranslations } from "@/lib/i18n"
 import { MAJOR_CITIES, CITIES_BY_CONTINENT, searchCities, type CityInfo } from "@/lib/city-data"
+import type { Language } from "@/types"
 
 interface CitySelectorProps {
   onSelect: (timezone: string, countryCode: string, cityName: string, cityNameEn: string, countryName: string) => void
+  language: Language
 }
 
-export default function CitySelector({ onSelect }: CitySelectorProps) {
+export default function CitySelector({ onSelect, language }: CitySelectorProps) {
   const [open, setOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
+  const t = useTranslations(language)
   const filteredCities = searchQuery ? searchCities(searchQuery) : MAJOR_CITIES
 
   const handleSelect = (city: CityInfo) => {
@@ -27,10 +31,10 @@ export default function CitySelector({ onSelect }: CitySelectorProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between h-12 border-2 border-dashed border-gray-300 hover:border-solid hover:border-primary/50 transition-all duration-300">
           <div className="flex items-center gap-2">
-            <Globe className="h-4 w-4" />
-            <span>시계 추가</span>
+            <Globe className="h-5 w-5" />
+            <span className="font-medium">{t.addClock}</span>
           </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -38,7 +42,7 @@ export default function CitySelector({ onSelect }: CitySelectorProps) {
       <PopoverContent className="w-[350px] p-0">
         <Command>
           <CommandInput 
-            placeholder="도시 또는 국가 검색..." 
+            placeholder={t.searchCityCountry}
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
@@ -46,13 +50,13 @@ export default function CitySelector({ onSelect }: CitySelectorProps) {
             <CommandEmpty>
               <div className="py-6 text-center">
                 <Globe className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                <p className="text-sm text-muted-foreground">검색된 도시가 없습니다.</p>
+                <p className="text-sm text-muted-foreground">{t.noSearchResults}</p>
               </div>
             </CommandEmpty>
 
             {searchQuery ? (
               // 검색 결과 표시
-              <CommandGroup heading="검색 결과">
+              <CommandGroup heading={t.searchResults}>
                 {filteredCities.map((city) => (
                   <CommandItem 
                     key={city.id} 

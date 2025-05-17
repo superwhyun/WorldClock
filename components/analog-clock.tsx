@@ -101,8 +101,8 @@ export default function AnalogClock({ datetime }: AnalogClockProps) {
   }, [datetime])
 
   return (
-    <div className="flex justify-center">
-      <canvas ref={canvasRef} width={200} height={200} className="max-w-full" />
+    <div className="flex justify-center items-center h-[180px]">
+      <canvas ref={canvasRef} width={180} height={180} className="max-w-full" />
     </div>
   )
 }

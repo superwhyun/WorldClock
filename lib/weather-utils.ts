@@ -18,10 +18,31 @@ interface WeatherData {
 
 // WeatherAPI 날씨 데이터 조회
 export async function getWeatherData(cityName: string): Promise<WeatherData | null> {
-  const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+  let apiKey: string | null = null;
+  
+  // localStorage를 우선적으로 확인 (클라이언트 사이드)
+  if (typeof window !== 'undefined') {
+    const storedApiKey = localStorage.getItem('world-clock-weather-api-key');
+    if (storedApiKey !== null) {
+      // localStorage에 값이 있으면 (빈 문자열이라도) 그것을 사용
+      apiKey = storedApiKey.trim() || null;
+    } else {
+      // localStorage에 값이 없으면 환경변수 사용
+      apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY || null;
+    }
+  } else {
+    // 서버사이드에서는 환경변수만 사용
+    apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY || null;
+  }
   
   if (!apiKey) {
     console.warn('Weather API key not found. Skipping weather data.');
+    return null;
+  }
+
+  // 도시명 유효성 검사
+  if (!cityName || cityName.trim() === '' || cityName === 'undefined') {
+    console.error('Invalid city name provided for weather API:', cityName);
     return null;
   }
 
